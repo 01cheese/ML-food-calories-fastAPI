@@ -9,8 +9,6 @@ import json
 import io
 
 app = FastAPI()
-
-# CORS
 origins = ["http://localhost:63342", "http://127.0.0.1:63342"]
 app.add_middleware(
     CORSMiddleware,
@@ -20,11 +18,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Статика и шаблоны
-app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 app.mount("/styles", StaticFiles(directory="styles"), name="styles")
 
-# Модель и данные
 processor = AutoProcessor.from_pretrained("nateraw/food")
 model = AutoModelForImageClassification.from_pretrained("nateraw/food")
 labels = model.config.id2label
@@ -32,7 +29,7 @@ labels = model.config.id2label
 with open("food101.json", "r") as f:
     nutrition_data = json.load(f)
 
-# Роуты
+
 @app.get("/", response_class=HTMLResponse)
 async def home():
     with open("templates/index.html", "r", encoding='utf-8') as f:
